@@ -15,7 +15,15 @@ ColladaFile = open(ColladaFilePath,'r')
 OutputFile = open( OutputFilePath, 'w')
 
 # Extract the required tags from the XML
+tree = ET.parse(UMLFile)
 
+root = tree.getroot()
+Diagrams = root.find('Diagrams')
+ClassDiagram = Diagrams.find('ClassDiagram')
+Shapes = ClassDiagram.find('Shapes')
+
+for i in Shapes.findall('Class'):
+    print i.get('Name')
 
 # Make node for each box in the UML and line respectively into Collada
 
