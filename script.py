@@ -13,12 +13,11 @@ Lines = []
 # Import the UML XML file
 # Import Collada template
 UMLFilePath = '../UML/project.xml'
-ColladaFilePath = '../blender/plain.dae'
+ColladaFilePath = '../blender/sample.dae'
 OutputFilePath = '../Output/diagram.dae'
 
 UMLFile = open(UMLFilePath,'r')
 ColladaFile = open(ColladaFilePath,'r')
-OutputFile = open( OutputFilePath, 'w')
 
 # Extract the required tags from the XML
 tree = ET.parse(UMLFile)
@@ -63,4 +62,13 @@ for connector in Connectors:
 # Make node for each box in the UML and line respectively into Collada
 
 
+Ctree = ET.parse('../blender/plain.dae')
 
+root = Ctree.getroot()
+geos = root.find('{http://www.collada.org/2005/11/COLLADASchema}library_geometries')
+
+for card in Cards:
+    node = ET.fromstring(card.Plot())
+    geos.append(node)
+
+Ctree.write('../Output/new.dae')
