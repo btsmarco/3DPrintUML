@@ -63,6 +63,7 @@ for connector in Connectors:
 
 
 Ctree = ET.parse('../blender/plain.dae')
+ET.register_namespace('', 'http://www.collada.org/2005/11/COLLADASchema')
 
 root = Ctree.getroot()
 geos = root.find('{http://www.collada.org/2005/11/COLLADASchema}library_geometries')
@@ -71,4 +72,4 @@ for card in Cards:
     node = ET.fromstring(card.Plot())
     geos.append(node)
 
-Ctree.write('../Output/new.dae')
+Ctree.write('../Output/new.dae',encoding="utf-8",xml_declaration=True,method="xml")
