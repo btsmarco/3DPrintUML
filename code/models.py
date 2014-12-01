@@ -1,3 +1,5 @@
+from math import floor
+
 class Card:
     # A card represents a class in a UML diagram, it takes in 2 params
     # 1. name: string, 2. coordinates: tuple(int, int) 3. width: int
@@ -5,14 +7,14 @@ class Card:
        self.name = name
        #TODO check if tuple too
        if (len(coordinates) == 2):
-            self.x = coordinates[0]
-            self.y = coordinates[1]
+            self.x = float(coordinates[0])
+            self.y = float(coordinates[1])
        else:
            print("Error, coordinates must be a tuple of x an y coordinates")
            exit(1)
 
        self.width = width
-       self.position = (0,0)
+       self.position = [0,0,0.5]  # [X,Y,Z]
 
     def GetName(self):
         return self.name
@@ -20,52 +22,40 @@ class Card:
     def GetCoordinates(self):
         return (self.x,self.y)
 
+    def GetX(self):
+        return self.x
+
+    def GetY(self):
+        return self.y
+
     def GetWidth(self):
         return self.width
 
-    def SetPosition(self,value):
-        #Set to position relative on collada
-        pass
+    def SetPosition(self, OldW, OldH, NewW, NewH):
+        # Normalize coordinates to new value
+        BoolResult = False
+
+        if( NewW < 20 or NewH < 10 ):
+            BoolResult = False
+        elif( OldW < int(self.x) or OldH < int(self.y) ):
+            BoolResult = False
+        else:
+            # The first part of the calculation we normalize the value
+            # to fit in the new slate size then we take away the decimals
+            # then we subtract it from (New/2) to make it relative to center
+            # not the upper left corner as it was
+
+            X = floor((self.x/OldW)* NewW) - (NewW/2)
+            Y = floor((self.y/OldH)* NewH) - (NewH/2)
+
+            self.position[0] = X
+            self.position[1] = Y
+            BoolResult = True
+
+        return BoolResult
 
     def GetPosition(self):
         return self.position
-
-    def Plot(self):
-        #Return as collada node, ready to be put in file
-        node ='''<geometry id="Cube_001-mesh" name="Cube.001">
-      <mesh>
-        <source id="Cube_001-mesh-positions">
-          <float_array id="Cube_001-mesh-positions-array" count="24">-1 -1 -1 -1 1 -1 1 1 -1 1 -1 -1 -1 -1 1 -1 1 1 1 1 1 1 -1 1</float_array>
-          <technique_common>
-            <accessor source="#Cube_001-mesh-positions-array" count="8" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="Cube_001-mesh-normals">
-          <float_array id="Cube_001-mesh-normals-array" count="36">-1 0 0 0 1 0 1 0 0 0 -1 0 0 0 -1 0 0 1 -1 0 0 0 1 0 1 0 0 0 -1 0 0 0 -1 0 0 1</float_array>
-          <technique_common>
-            <accessor source="#Cube_001-mesh-normals-array" count="12" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <vertices id="Cube_001-mesh-vertices">
-          <input semantic="POSITION" source="#Cube_001-mesh-positions"/>
-        </vertices>
-        <polylist count="12">
-          <input semantic="VERTEX" source="#Cube_001-mesh-vertices" offset="0"/>
-          <input semantic="NORMAL" source="#Cube_001-mesh-normals" offset="1"/>
-          <vcount>3 3 3 3 3 3 3 3 3 3 3 3 </vcount>
-          <p>4 0 5 0 1 0 5 1 6 1 2 1 6 2 7 2 3 2 7 3 4 3 0 3 0 4 1 4 2 4 7 5 6 5 5 5 0 6 4 6 1 6 1 7 5 7 2 7 2 8 6 8 3 8 3 9 7 9 0 9 3 10 0 10 2 10 4 11 7 11 5 11</p>
-        </polylist>
-      </mesh>
-    </geometry>'''
-        return node
 
 class Line:
     # A line represents an assosiation or inheritance in a UML diagram,
@@ -101,43 +91,4 @@ class Line:
 
     def GetPosition(self):
         return self.position
-
-    def Plot(self):
-        #Return as collada node, ready to be put in file
-        node ='''<geometry id="Cube_001-mesh" name="Cube.001">
-      <mesh>
-        <source id="Cube_001-mesh-positions">
-          <float_array id="Cube_001-mesh-positions-array" count="24">-1 -1 -1 -1 1 -1 1 1 -1 1 -1 -1 -1 -1 1 -1 1 1 1 1 1 1 -1 1</float_array>
-          <technique_common>
-            <accessor source="#Cube_001-mesh-positions-array" count="8" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="Cube_001-mesh-normals">
-          <float_array id="Cube_001-mesh-normals-array" count="36">-1 0 0 0 1 0 1 0 0 0 -1 0 0 0 -1 0 0 1 -1 0 0 0 1 0 1 0 0 0 -1 0 0 0 -1 0 0 1</float_array>
-          <technique_common>
-            <accessor source="#Cube_001-mesh-normals-array" count="12" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <vertices id="Cube_001-mesh-vertices">
-          <input semantic="POSITION" source="#Cube_001-mesh-positions"/>
-        </vertices>
-        <polylist count="12">
-          <input semantic="VERTEX" source="#Cube_001-mesh-vertices" offset="0"/>
-          <input semantic="NORMAL" source="#Cube_001-mesh-normals" offset="1"/>
-          <vcount>3 3 3 3 3 3 3 3 3 3 3 3 </vcount>
-          <p>4 0 5 0 1 0 5 1 6 1 2 1 6 2 7 2 3 2 7 3 4 3 0 3 0 4 1 4 2 4 7 5 6 5 5 5 0 6 4 6 1 6 1 7 5 7 2 7 2 8 6 8 3 8 3 9 7 9 0 9 3 10 0 10 2 10 4 11 7 11 5 11</p>
-        </polylist>
-      </mesh>
-    </geometry>'''
-        return node
-
-
 

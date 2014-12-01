@@ -11,13 +11,9 @@ Cards = []
 Lines = []
 
 # Import the UML XML file
-# Import Collada template
 UMLFilePath = '../UML/project.xml'
-ColladaFilePath = '../blender/sample.dae'
-OutputFilePath = '../Output/diagram.dae'
 
 UMLFile = open(UMLFilePath,'r')
-ColladaFile = open(ColladaFilePath,'r')
 
 # Extract the required tags from the XML
 tree = ET.parse(UMLFile)
@@ -42,34 +38,50 @@ for connector in Connectors:
 
 #Just to check
 
-#for card in Cards:
-#    print 'Card name is %s'%(card.GetName())
-#    coordinates = card.GetCoordinates()
-#    print 'Card coordinates are (%s,%s)'%(coordinates[0],coordinates[1])
-#    print 'Card width is %s'%(card.GetWidth())
-#    print line.Plot()
-#    print ''
+for card in Cards:
+    print 'Card name is %s'%(card.GetName())
+    coordinates = card.GetCoordinates()
+    print 'Card coordinates are (%s,%s)'%(coordinates[0],coordinates[1])
+    print 'Card width is %s'%(card.GetWidth())
+    print ''
 
-#for line in Lines:
-#    print 'Line Type is %s'%(line.GetType())
-#    coordinates = line.GetCoordinates()
-#    print 'Line coordinates are (%s,%s)'%(coordinates[0],coordinates[1])
-#    print 'Line width is %s'%(line.GetWidth())
-#    print line.Plot()
-#    print ''
+for line in Lines:
+    print 'Line Type is %s'%(line.GetType())
+    coordinates = line.GetCoordinates()
+    print 'Line coordinates are (%s,%s)'%(coordinates[0],coordinates[1])
+    print 'Line width is %s'%(line.GetWidth())
+    print ''
 
+#-----------------------------
 
-# Make node for each box in the UML and line respectively into Collada
+# Find the largest X and Y value in the cards to
+# find out the approximate size of the old diagram
 
+BufValue = 15
+SampleHeight = 150
+# These functions are given to the max builtin function
+def Xcoord(c):
+    return c.GetX()
 
-Ctree = ET.parse('../blender/plain.dae')
-ET.register_namespace('', 'http://www.collada.org/2005/11/COLLADASchema')
+def Ycoord(c):
+    return c.GetY()
 
-root = Ctree.getroot()
-geos = root.find('{http://www.collada.org/2005/11/COLLADASchema}library_geometries')
+MaxX = max(Cards, key=Xcoord)
+MaxY = max(Cards, key=Ycoord)
+
+OldWidth = MaxX.GetX() + BufValue
+OldHeight = MaxY.GetY() + SampleHeight + BufValue
+
+# Values of the 3D slate base
+SlatX = 100
+SlatY = 60
 
 for card in Cards:
-    node = ET.fromstring(card.Plot())
-    geos.append(node)
+    b = card.SetPosition(OldWidth, OldHeight, SlatX, SlatY)
 
-Ctree.write('../Output/new.dae',encoding="utf-8",xml_declaration=True,method="xml")
+    # TODO delete in production
+    assert(b)
+    
+    P = card.GetPosition()
+    print 'New Card Position [%f,%f,%f]'%(P[0],P[1],P[2])
+
