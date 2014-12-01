@@ -3,7 +3,9 @@
 # Objective: Convert UML diagrams (XML format) to Collada for 3D printing (also XML)
 
 import xml.etree.ElementTree as ET
+from solid import *
 from models import Card,Line
+from factory import assembly
 
 # Variables
 # TODO turn to dictionary if needed
@@ -40,14 +42,14 @@ for connector in Connectors:
 
 for card in Cards:
     print 'Card name is %s'%(card.GetName())
-    coordinates = card.GetCoordinates()
+    coordinates = [card.GetX(),card.GetY()]
     print 'Card coordinates are (%s,%s)'%(coordinates[0],coordinates[1])
     print 'Card width is %s'%(card.GetWidth())
     print ''
 
 for line in Lines:
     print 'Line Type is %s'%(line.GetType())
-    coordinates = line.GetCoordinates()
+    coordinates = [line.GetX(),line.GetY()]
     print 'Line coordinates are (%s,%s)'%(coordinates[0],coordinates[1])
     print 'Line width is %s'%(line.GetWidth())
     print ''
@@ -69,7 +71,8 @@ def Ycoord(c):
 MaxX = max(Cards, key=Xcoord)
 MaxY = max(Cards, key=Ycoord)
 
-OldWidth = MaxX.GetX() + BufValue
+# TODO do something about the 200 value
+OldWidth = MaxX.GetX() + BufValue + 200
 OldHeight = MaxY.GetY() + SampleHeight + BufValue
 
 # Values of the 3D slate base
@@ -78,10 +81,25 @@ SlatY = 60
 
 for card in Cards:
     b = card.SetPosition(OldWidth, OldHeight, SlatX, SlatY)
+    k = card.SetWidth(OldWidth, SlatX)
 
     # TODO delete in production
     assert(b)
-    
-    P = card.GetPosition()
-    print 'New Card Position [%f,%f,%f]'%(P[0],P[1],P[2])
+    assert(k)
 
+    P = card.GetPosition()
+    W = card.GetWidth()
+    print 'New Card Position [%f,%f,%f] and width %f'%(P[0],P[1],P[2],W)
+
+for line in Lines:
+    o = line.SetPosition(OldWidth, OldHeight, SlatX, SlatY)
+    k = line.SetWidth(OldWidth, SlatX)
+
+    # TODO delete in production
+    assert(o)
+    assert(k)
+
+Slat = assembly(SlatX,SlatY,Cards,Lines)
+
+SEGMENTS = 48
+scad_render_to_file( Slat, file_header='$fn = %s;'%SEGMENTS, include_orig_code=True)
