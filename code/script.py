@@ -13,7 +13,7 @@ Cards = []
 Lines = []
 
 # Import the UML XML file
-UMLFilePath = '../UML/project.xml'
+UMLFilePath = '../UML/project5.xml'
 
 UMLFile = open(UMLFilePath,'r')
 
@@ -68,24 +68,25 @@ for connector in Connectors:
 
 # Values of the 3D slate base
 SlatWidth = 100
-SlatHeight = 60
+SlatHeight = ((DiagramHeight*SlatWidth)/DiagramWidth)
 
 for card in Cards:
-    b = card.SetPosition(DiagramWidth, DiagramHeight, SlatWidth, SlatHeight)
     Nw = card.Normalize('width',DiagramWidth, SlatWidth)
     Nh = card.Normalize('height',DiagramHeight, SlatHeight)
+    b = card.SetPosition(DiagramWidth, DiagramHeight, SlatWidth, SlatHeight)
 
     # TODO delete in production
     assert(Nw)
     assert(Nh)
+    assert(b)
 
 #    P = card.GetPosition()
 #    W = card.GetWidth()
 #    print 'New Card Position [%f,%f,%f] and width %f'%(P[0],P[1],P[2],W)
 
 for line in Lines:
-    o = line.SetPosition(DiagramWidth, DiagramHeight, SlatWidth, SlatHeight)
     k = line.SetWidth(DiagramWidth, SlatWidth)
+    o = line.SetPosition(DiagramWidth, DiagramHeight, SlatWidth, SlatHeight)
 
     # TODO delete in production
     assert(o)
@@ -95,3 +96,14 @@ Slat = assembly(SlatWidth,SlatHeight,Cards,Lines)
 
 SEGMENTS = 48
 scad_render_to_file( Slat, file_header='$fn = %s;'%SEGMENTS, include_orig_code=True)
+
+
+### List of ToDos
+## TODO make the cubes and slate overlap with atleast .25
+## TODO Check for dividing by zero (getting any value from the XML as zero)
+## TODO Check that no box exceeds height of slate (bug!)
+## TODO Boxes are leaning towards the negative on the X-axis slightly
+## TODO Links - use cylinders? use points given
+## TODO Test dimentional links
+## TODO Braille
+## TODO enhancements to empty areas on the slate (reduce them, or slightly enlarge classes)

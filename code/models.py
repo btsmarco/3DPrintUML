@@ -10,7 +10,7 @@ class Card:
             self.x = float(coordinates[0])
             self.y = float(coordinates[1])
        else:
-           print("Error, coordinates must be a tuple of x an y coordinates")
+           print("Error, coordinates must be a tuple of x and y coordinates")
            exit(1)
 
        self.width = float(width)
@@ -77,12 +77,16 @@ class Card:
             # then we subtract it from (New/2) to make it relative to center
             # not the upper left corner as it was
 
-#            X = floor((self.x/OldW)* NewW) - (NewW/2)
-#            Y = floor((self.y/OldH)* NewH) - (NewH/2)
+            X = round( ((self.x/OldW)* NewW) - (NewW/2.0),2)
+            Y = round( ((NewH/2.0) - (self.y/OldH)* NewH),2)
+            print ("Here is the operation:X (%f)=  (self.x(%f)/OldW(%d))*NewW(%d)) - (NewW(%d)/2)")%(\
+                    X,self.x,OldW,NewW,NewW)
 
-            X = round( ((self.x/OldW)* NewW) - (NewW/2),2)
-            Y = round( ((self.y/OldH)* NewH) - (NewH/2),2)
+            # need to make sure width and height are normalized
+            X = X + (self.width/2)
+            Y = Y - (self.height/2)
 
+            print( "X is finally is %f, (and self.width(%f)/2)")%(X,self.width)
 
             self.position[0] = X
             self.position[1] = Y
@@ -143,7 +147,6 @@ class Line:
 
         return BoolResult
 
-
     def SetPosition(self, OldW, OldH, NewW, NewH):
         # Normalize coordinates to new value
         BoolResult = False
@@ -158,10 +161,11 @@ class Line:
             # then we subtract it from (New/2) to make it relative to center
             # not the upper left corner as it was
 
-           #X = floor((self.x/OldW)* NewW) - (NewW/2)
-           #Y = floor((self.y/OldH)* NewH) - (NewH/2)
             X = round( ((self.x/OldW)* NewW) - (NewW/2),2)
-            Y = round( ((self.y/OldH)* NewH) - (NewH/2),2)
+            Y = round( ((NewH/2.0) - (self.y/OldH)* NewH),2)
+
+            X = X + (self.width/2)
+            Y = Y - 3  # re evaluate
 
 
             self.position[0] = X

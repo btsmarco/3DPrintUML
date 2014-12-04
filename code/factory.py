@@ -22,13 +22,13 @@ def assembly(bX,bY,CardList,LineList):
 
     Lines = []
     for line in LineList:
-        l = translate(line.GetPosition())(color(Black)(cube([line.GetWidth(),1,0.5],True)))
+        l = translate(line.GetPosition())(color(Red)(cube([line.GetWidth(),1,0.5],True)))
         Lines.append(l)
 
     FinalBoard = union()(
             base,
             Cubes,
-            Lines,
+            #Lines,
         )
 
     return FinalBoard
