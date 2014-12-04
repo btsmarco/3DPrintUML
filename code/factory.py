@@ -17,7 +17,7 @@ def assembly(bX,bY,CardList,LineList):
     Cubes = []
 
     for card in CardList:
-        c = translate(card.GetPosition())(color(Red)(cube([card.GetWidth(),10,0.5],True)))
+        c = translate(card.GetPosition())(color(Red)(cube([card.GetWidth(),card.GetHeight(),0.5],True)))
         Cubes.append(c)
 
     Lines = []

@@ -3,7 +3,7 @@ from math import floor
 class Card:
     # A card represents a class in a UML diagram, it takes in 2 params
     # 1. name: string, 2. coordinates: tuple(int, int) 3. width: int
-    def __init__(self,name,coordinates,width):
+    def __init__(self,name,coordinates,width,height):
        self.name = name
        #TODO check if tuple too
        if (len(coordinates) == 2):
@@ -14,6 +14,7 @@ class Card:
            exit(1)
 
        self.width = float(width)
+       self.height = float(height)
        self.position = [0,0,1]  # [X,Y,Z]
 
     def GetName(self):
@@ -28,26 +29,39 @@ class Card:
     def GetWidth(self):
         return self.width
 
-    def SetWidth(self,OldW, NewW):
+    def GetHeight(self):
+        return self.height
+
+    # Normalize takes input var:str ('width' or height'),
+    # OldV:int (UML diagram Value), NewV:int (3D slate size Value)
+    #
+    # The first part of the calculation we normalize the value
+    # to fit in the new slate size then we take away the decimals
+    def Normalize(self,Var,OldV, NewV):
         BoolResult = False
 
-        if( NewW < 20 ):
+        if( NewV < 20 ):
             BoolResult = False
-        elif( OldW < int(self.x)):
-            BoolResult = False
+
+        if(Var == 'width'):
+            if( OldV < self.x):
+                BoolResult = False
+            else:
+                #self.width = floor((self.width/OldV)* NewV)
+                self.width = round((self.width/OldV)* NewV,2)
+                BoolResult = True
+
+        elif( Var == 'height'):
+            if( OldV < self.y):
+                BoolResult = False
+            else:
+                #self.width = floor((self.width/OldV)* NewV)
+                self.height = round((self.height/OldV)* NewV,2)
+                BoolResult = True
         else:
-            # The first part of the calculation we normalize the value
-            # to fit in the new slate size then we take away the decimals
-            # then we subtract it from (New/2) to make it relative to center
-            # not the upper left corner as it was
-
-            #self.width = floor((self.width/OldW)* NewW)
-            self.width = round((self.width/OldW)* NewW,2)
-
-            BoolResult = True
+            BoolResult = False
 
         return BoolResult
-
 
     def SetPosition(self, OldW, OldH, NewW, NewH):
         # Normalize coordinates to new value
