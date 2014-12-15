@@ -47,7 +47,6 @@ class Card:
             if( OldV < self.x):
                 BoolResult = False
             else:
-                #self.width = floor((self.width/OldV)* NewV)
                 self.width = round((self.width/OldV)* NewV,2)
                 BoolResult = True
 
@@ -55,7 +54,6 @@ class Card:
             if( OldV < self.y):
                 BoolResult = False
             else:
-                #self.width = floor((self.width/OldV)* NewV)
                 self.height = round((self.height/OldV)* NewV,2)
                 BoolResult = True
         else:
@@ -79,14 +77,11 @@ class Card:
 
             X = round( ((self.x/OldW)* NewW) - (NewW/2.0),2)
             Y = round( ((NewH/2.0) - (self.y/OldH)* NewH),2)
-            print ("Here is the operation:X (%f)=  (self.x(%f)/OldW(%d))*NewW(%d)) - (NewW(%d)/2)")%(\
-                    X,self.x,OldW,NewW,NewW)
 
             # need to make sure width and height are normalized
             X = X + (self.width/2)
             Y = Y - (self.height/2)
 
-            print( "X is finally is %f, (and self.width(%f)/2)")%(X,self.width)
 
             self.position[0] = X
             self.position[1] = Y
@@ -140,7 +135,6 @@ class Line:
             # then we subtract it from (New/2) to make it relative to center
             # not the upper left corner as it was
 
-            #self.width = floor((self.width/OldW)* NewW)
             self.width = round((self.width/OldW)* NewW,2)
 
             BoolResult = True

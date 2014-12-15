@@ -28,7 +28,7 @@ def assembly(bX,bY,CardList,LineList):
     FinalBoard = union()(
             base,
             Cubes,
-            #Lines,
+            Lines,
         )
 
     return FinalBoard

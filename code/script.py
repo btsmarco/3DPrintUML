@@ -13,7 +13,7 @@ Cards = []
 Lines = []
 
 # Import the UML XML file
-UMLFilePath = '../UML/project5.xml'
+UMLFilePath = '../UML/project2.xml'
 
 UMLFile = open(UMLFilePath,'r')
 
